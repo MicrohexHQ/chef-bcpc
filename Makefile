@@ -12,11 +12,11 @@ storagenodes = \
 all : \
 	sync-assets \
 	configure-operator \
+	configure-web-server \
 	configure-networking \
 	configure-chef-server \
 	configure-chef-workstation \
 	configure-chef-nodes \
-	configure-web-server \
 	run-chef-client \
 	add-cloud-images \
 	register-compute-nodes
@@ -58,6 +58,12 @@ sync-assets :
 	ansible-playbook -v \
 		-i ${inventory} ${playbooks}/site.yml \
 		-t sync-assets --limit localhost
+
+configure-apt :
+
+	ansible-playbook -v \
+		-i ${inventory} ${playbooks}/site.yml \
+		-t configure-apt --limit cloud
 
 configure-chef-server :
 

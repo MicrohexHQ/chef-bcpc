@@ -1,0 +1,15 @@
+- name: configure apt proxy
+  template:
+    src: apt/proxy.j2
+    dest: /etc/apt/apt.conf.d/proxy
+  when: local_proxy is defined and local_proxy['enabled']
+
+- name: configure apt translations
+  copy:
+    src: apt/translations
+    dest: /etc/apt/apt.conf.d/translations
+
+- name: add bootstrap apt repo
+  apt_repository:
+    repo: "deb [trusted=yes] http://{{ bootstrap_fqdn }}:8080/repo ./"
+    state: present

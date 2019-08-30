@@ -56,11 +56,7 @@
     enabled: yes
   when: tinyproxy.changed
 
-- name: configure apt proxy
-  template:
-    src: apt/proxy.j2
-    dest: /etc/apt/apt.conf.d/proxy
-  when: local_proxy is defined and local_proxy['enabled']
+- include: configure-apt.yml
 
 - name: install bird
   apt:

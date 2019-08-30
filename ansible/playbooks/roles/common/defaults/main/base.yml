@@ -135,7 +135,7 @@ all_chef_extra_cookbooks: "{{ chef_extra_cookbooks +
                               additional_chef_extra_cookbooks | default([]) }}"
 
 ###############################################################################
-# web server file assets
+# web server assets
 ###############################################################################
 
 web_server_assets:
@@ -148,6 +148,15 @@ web_server_assets:
 # all web server file assets
 all_web_server_assets: "{{ web_server_assets +
                             additional_web_server_assets | default([]) }}"
+
+web_server_debs:
+  - file_asset: chef_client
+  - file_asset: chef_server
+
+
+# all web server debs
+all_web_server_debs: "{{ web_server_debs +
+                          additional_web_server_debs | default([]) }}"
 
 ###############################################################################
 # external files (to be downloaded)
@@ -211,3 +220,11 @@ virtualbox:
 ###############################################################################
 
 host_aggregates: []
+
+###############################################################################
+# bootstrap
+###############################################################################
+
+bootstrap_host: "{{ groups['bootstraps'][0] }}"
+bootstrap_ip: "{{ hostvars[bootstrap_host][service][ip] | ipaddr('address') }}"
+bootstrap_fqdn: "{{ bootstrap_host }}.{{ cloud_infrastructure_domain }}"

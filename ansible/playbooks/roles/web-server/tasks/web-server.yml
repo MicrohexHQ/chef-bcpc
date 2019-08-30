@@ -7,3 +7,32 @@
 
 - include: upload-web-server-file.yml
   with_items: "{{ all_web_server_assets }}"
+
+- name: create web server repo folder
+  file:
+    path: /var/bcpc/www/repo
+    state: directory
+    mode: 0755
+    recurse: true
+
+- include: upload-web-server-deb.yml
+  with_items: "{{ all_web_server_debs }}"
+
+- name: update deb repo package metadata
+  shell: |
+    set -o pipefail
+    dpkg-scanpackages . | xz > Packages.xz
+  args:
+    executable: /bin/bash
+    chdir: /var/bcpc/www/repo
+  changed_when: false
+
+- name: get current date for repo release file
+  command: date -R -u
+  register: repo_release_date
+  changed_when: false
+
+- name: configure deb repo release file
+  template:
+    src: repo/Release.j2
+    dest: /var/bcpc/www/repo/Release
